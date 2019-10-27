@@ -1,3 +1,4 @@
+
 import asyncio
 import aiohttp
 import time
@@ -15,7 +16,7 @@ class VirusTotal_Client():
       self.API_KEY = key
       self.BASE_URL = "https://www.virustotal.com/vtapi/v2/"
 
-class URLScanner:
+class URLScanner(VirusTotal_Client):
     async def get_report(self, urls):
         """
         async function, an attribute of URLScanner class - response is ClientReponse type and is dict 
@@ -30,7 +31,7 @@ class URLScanner:
                         print(r)
                         if r["response_code"] == 1:
                             print("existing report found. "+str(r["response_code"]))
-                        elif if r["response_code"] == -2:
+                        elif r["response_code"] == -2:
                             print("scan queued come back later! "+str(r["response_code"]))
                         else:
                             make_request(url)
@@ -62,11 +63,11 @@ class URLScanner:
                     else:
                         print(resp.status)
     
-class FileScanner:
+class FileScanner(VirusTotal_Client):
 
     async def get_report(self, resources):
         """
-        async function, an attribute of URLScanner class - response is ClientReponse type and is dict 
+        async function, an attribute of FileScanner class - response is ClientReponse type and is dict 
         retrieves a report from VT and if not exist makes call to submit func to scan it
         """
         for res in resources:
@@ -79,7 +80,7 @@ class FileScanner:
                         print(r)
                         if r["response_code"] == 1:
                             print("existing report found. "+str(r["response_code"]))
-                        elif if r["response_code"] == -2:
+                        elif r["response_code"] == -2:
                             print("scan queued come back later! "+str(r["response_code"]))
                         else:
                             make_request(url)
@@ -92,7 +93,7 @@ class FileScanner:
 
     async def make_request(self, resources):
         """
-        async function, an attribute of URLScanner class - response is ClientReponse type and is dict 
+        async function, an attribute of FileScanner class - response is ClientReponse type and is dict 
         subimts a URL to VT 
         """
         for res in resources:
@@ -111,11 +112,11 @@ class FileScanner:
                     else:
                         print(resp.status)
     
-class DomainScanner:
+class DomainScanner(VirusTotal_Client):
 
     async def get_report(self, domains):
         """
-        async function, an attribute of URLScanner class - response is ClientReponse type and is dict 
+        async function, an attribute of DomainScanner class - response is ClientReponse type and is dict 
         retrieves a report from VT 
         """
         for dom in domains:
@@ -128,7 +129,7 @@ class DomainScanner:
                         print(r)
                         if r["response_code"] == 1:
                             print("existing report found. "+str(r["response_code"]))
-                        elif if r["response_code"] == -2:
+                        elif r["response_code"] == -2:
                             print("scan queued come back later! "+str(r["response_code"]))
                         else:
                             make_request(url)
@@ -139,11 +140,11 @@ class DomainScanner:
                     else:
                         print(resp.status)
 
-class IPScanner:
+class IPScanner(VirusTotal_Client):
 
     async def get_report(ips):
         """
-        async function, an attribute of URLScanner class - response is ClientReponse type and is dict 
+        async function, an attribute of IPScanner class - response is ClientReponse type and is dict 
         retrieves a report from VT a
         """
         for ip in ips:
@@ -156,7 +157,7 @@ class IPScanner:
                         print(r)
                         if r["response_code"] == 1:
                             print("existing report found. "+str(r["response_code"]))
-                        elif if r["response_code"] == -2:
+                        elif r["response_code"] == -2:
                             print("scan queued come back later! "+str(r["response_code"]))
                         else:
                             make_request(url)
@@ -173,20 +174,20 @@ class IPScanner:
 if __name__ == "__main__":
   
 
-     try:
-        with open(os.getenv("VT-API")) as key:
-             client = VirusTotal_Client(key)
-     except:
-        print('put your VT API KEY in ENV VAR VT-API')
-        sys.exit()
+    #  try:
+    #     with open(os.getenv("VT-API")) as key:
+    #          client = VirusTotal_Client(key)
+    #  except:
+    #     print('put your VT API KEY in ENV VAR VT-API')
+    #     sys.exit()
 
-    parser = argparse.ArgumentParser(description='Virustotal Async Client for the tired SOC Analyst')
-    parser.add_argument("-o", "--output", help="output file for your report", action="store_true")
+    # parser = argparse.ArgumentParser(description='Virustotal Async Client for the tired SOC Analyst')
+    # parser.add_argument("-o", "--output", help="output file for your report", action="store_true")
     
-    args = parser.parse_args()
-    
+    # args = parser.parse_args()
+    key="key"
+    #client = VirusTotal_Client(key)
     urls = ["https://www.google.com","https://www.apple.com"]
     loop = asyncio.get_event_loop()
-    scanner = client.URLScanner()
+    scanner = URLScanner(key)
     loop.run_until_complete(scanner.get_report(urls))
-
